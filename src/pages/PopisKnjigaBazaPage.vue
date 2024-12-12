@@ -50,12 +50,13 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 
 const style1 = {
   fontSize: "18px",
 };
+
 const style2 = {
   fontSize: "24px",
 };
@@ -112,35 +113,49 @@ const columns = [
     headerStyle: style2,
   },
 ];
-let books = ref([]);
 
 export default {
   setup() {
+    const books = ref([]);
+    const pagination = ref({
+      rowsPerPage: 10,
+    });
+
+    const loadBooks = async () => {
+      try {
+        const result = await axios.get("http://localhost:3000/api/knjige/");
+
+        // Check if result.data is an array directly
+        if (Array.isArray(result.data)) {
+          console.log("Received books:", result.data);
+          books.value = result.data; // Update the books list
+          // Check if the first book exists before accessing it
+          if (books.value.length > 0) {
+            console.log("First book id:", books.value[0].id); // Safely log the first book's id
+          } else {
+            console.error("No books found.");
+          }
+        } else {
+          console.error(
+            "API response is not in the expected format:",
+            result.data
+          );
+        }
+      } catch (error) {
+        console.error("Error loading books:", error);
+      }
+    };
+
+    // Load books when component is mounted
+    onMounted(() => {
+      loadBooks();
+    });
+
     return {
       columns,
       books,
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      pagination,
     };
-  },
-
-  mounted() {
-    this.loadBooks();
-  },
-  methods: {
-    async loadBooks() {
-      await axios
-        .get("http://localhost:3000/api/knjige/")
-        .then((result) => {
-          console.log(result.data.data);
-          this.books = result.data.data;
-          console.log(this.books[0].id);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
   },
 };
 </script>

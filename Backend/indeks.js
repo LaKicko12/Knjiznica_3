@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
+const axios = require("axios");
 
 const app = express();
 const port = 3000;
@@ -13,11 +14,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const connection = mysql.createConnection({
-  host: "student.veleri.hr",
+  host: "ucka.veleri.hr",
   user: "esimonovic",
   password: "11",
   database: "esimonovic",
 });
+
+//novo
+app.use(cors({ origin: "http://localhost:9000" }));
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -70,3 +74,12 @@ app.post("/api/rezerv_knjige", (req, res) => {
 app.listen(port, () => {
   console.log("Server running at port: " + port);
 });
+
+axios
+  .get("http://localhost:3000/api/knjige/")
+  .then((response) => {
+    console.log(response.data);
+  })
+  .catch((error) => {
+    console.error("Error loading books:", error);
+  });
