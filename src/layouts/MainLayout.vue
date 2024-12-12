@@ -91,7 +91,13 @@ const linksList = [
     caption: "@QuasarFramework",
     icon: "public",
     link: "#/popis_knjiga_baza",
-  }
+  },
+  {
+    title: "Rezervacije",
+    caption: "@QuasarFramework",
+    icon: "public",
+    link: "#/rezervacija",
+  },
 ];
 
 const leftDrawerOpen = ref(false);
