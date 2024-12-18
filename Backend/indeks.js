@@ -83,3 +83,31 @@ axios
   .catch((error) => {
     console.error("Error loading books:", error);
   });
+
+  //novi dio za rezervaciju
+  app.get("/api/rezervirane_knjige", (req, res) => {
+    const query = `
+      SELECT 
+          r.id AS rezervacija_id,
+          k.naslov AS naslov_knjige,
+          k.autor AS autor_knjige,
+          CONCAT(kr.ime, ' ', kr.prezime) AS korisnik,
+          r.datum_rez AS datum_rezervacije
+      FROM 
+          rezervacija r
+      JOIN 
+          knjiga k ON r.knjiga = k.id
+      JOIN 
+          korisnik kr ON r.korisnik = kr.id;
+    `;
+  
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error("Error fetching reservations:", error);
+        res.status(500).send("Error fetching reservations.");
+        return;
+      }
+      res.json(results);
+    });
+  });
+  
