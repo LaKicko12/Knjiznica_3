@@ -24,6 +24,7 @@
 
 <script>
 import { ref } from 'vue'
+import axios from 'axios';
 
 const columns = [
   {

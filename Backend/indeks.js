@@ -70,7 +70,18 @@ app.post("/api/rezerv_knjige", (req, res) => {
   );
   // res.send("poslano"+data.id_knjiga);
 });
-
+//DIO BACKEND-A ZA STRANICU UNOS KNJIGA OD ADMINA
+  //unosimo knjige
+  app.post("/api/unos_knjiga", (req, res) => {
+    const data = req.body;
+    knjiga = [[data.naslov, data.autor, data.opis, data.slika, data.stanje]];
+    connection.query("INSERT INTO knjiga (naslov, autor, opis, slika, stanje) VALUES ?",
+      [knjiga],(error, results) => {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  });
 app.listen(port, () => {
   console.log("Server running at port: " + port);
 });
@@ -84,23 +95,23 @@ axios
     console.error("Error loading books:", error);
   });
 
-  //novi dio za rezervaciju
+  //DIO ZA REZERVACIJU
   app.get("/api/rezervirane_knjige", (req, res) => {
     const query = `
-      SELECT 
+      SELECT
           r.id AS rezervacija_id,
           k.naslov AS naslov_knjige,
           k.autor AS autor_knjige,
           CONCAT(kr.ime, ' ', kr.prezime) AS korisnik,
           r.datum_rez AS datum_rezervacije
-      FROM 
+      FROM
           rezervacija r
-      JOIN 
+      JOIN
           knjiga k ON r.knjiga = k.id
-      JOIN 
+      JOIN
           korisnik kr ON r.korisnik = kr.id;
     `;
-  
+
     connection.query(query, (error, results) => {
       if (error) {
         console.error("Error fetching reservations:", error);
@@ -110,4 +121,6 @@ axios
       res.json(results);
     });
   });
-  
+
+
+

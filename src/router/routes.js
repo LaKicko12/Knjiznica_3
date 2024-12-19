@@ -33,6 +33,24 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/admin",
+    component: () => import("layouts/AdminLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/AdminPage.vue") },
+      {
+        path: "/admin/popis_knjiga",
+        component: () => import("pages/PopisKnjigaPage.vue"),
+      },
+      {
+        path: "/admin/pretrazivanje",
+        component: () => import("pages/TraziKnjigu.vue"),
+      },
+      { path: "/admin/popis_korisnika", component: () => import("pages/PopisKorisnikaPage.vue") },
+      { path: "/admin/logout", component: () => import("pages/LogoutPage.vue") },
+      { path: "/admin/unos_knjiga", component: () => import("pages/UnosKnjigaPage.vue") },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
